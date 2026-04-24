@@ -63,6 +63,15 @@ export class SmartConstructionSystem {
     };
   }
 
+  listUsers() {
+    return this.#users.map((user) => ({
+      id: user.id,
+      name: user.name,
+      role: user.role,
+      permissions: user.getPermissions()
+    }));
+  }
+
   listTasks() {
     return this.#tasks.map((task) => task.toJSON());
   }

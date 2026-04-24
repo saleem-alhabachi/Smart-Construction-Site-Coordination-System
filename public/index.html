@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Construction Site Coordination System</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Construction Coordination Dashboard</p>
+          <h1>Smart Construction Site Coordination System</h1>
+          <p class="hero-text">
+            A project management MVP for tracking construction tasks, monitoring
+            risks, and generating weekly progress visibility from one shared
+            workspace.
+          </p>
+          <div class="hero-actions">
+            <span class="pill">Task Management</span>
+            <span class="pill">Risk Control</span>
+            <span class="pill">Progress Reporting</span>
+          </div>
+        </div>
+        <aside class="hero-panel">
+          <div class="hero-panel-label">Weekly Report</div>
+          <div id="reportTimestamp" class="hero-panel-time">Loading...</div>
+          <div class="hero-panel-grid">
+            <div>
+              <strong id="completedTasks">0</strong>
+              <span>Completed Tasks</span>
+            </div>
+            <div>
+              <strong id="openRisks">0</strong>
+              <span>Open Risks</span>
+            </div>
+          </div>
+        </aside>
+      </header>
+
+      <main class="dashboard">
+        <section class="stats-grid" id="statsGrid"></section>
+
+        <section class="content-grid">
+          <article class="panel wide">
+            <div class="panel-header">
+              <div>
+                <p class="panel-kicker">Live Work Overview</p>
+                <h2>Task Schedule</h2>
+              </div>
+            </div>
+            <div id="taskList" class="card-list"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-header">
+              <div>
+                <p class="panel-kicker">Site Exposure</p>
+                <h2>Risk Register</h2>
+              </div>
+            </div>
+            <div id="riskList" class="risk-list"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-header">
+              <div>
+                <p class="panel-kicker">Role Model</p>
+                <h2>Project Team</h2>
+              </div>
+            </div>
+            <div id="userList" class="user-list"></div>
+          </article>
+
+          <article class="panel wide accent-panel">
+            <div class="panel-header">
+              <div>
+                <p class="panel-kicker">Operational Timeline</p>
+                <h2>Unified Work Items</h2>
+              </div>
+            </div>
+            <div id="workItemTimeline" class="timeline"></div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+  </html>

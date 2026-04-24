@@ -1,54 +1,69 @@
-import { ProjectManager } from "./models/ProjectManager.js";
-import { SiteEngineer } from "./models/SiteEngineer.js";
-import { SmartConstructionSystem } from "./services/SmartConstructionSystem.js";
-import { Subcontractor } from "./models/Subcontractor.js";
+import http from "node:http";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const system = new SmartConstructionSystem();
+import { buildDemoSystem } from "./demoData.js";
 
-const projectManager = system.registerUser(new ProjectManager("U1", "Saleem Alhabachi"));
-const siteEngineer = system.registerUser(new SiteEngineer("U2", "Waleed"));
-const subcontractor = system.registerUser(new Subcontractor("U3", "Mohammed"));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const publicDir = path.resolve(__dirname, "../public");
 
-const foundationTask = system.createTask(
-  "T1",
-  "Prepare foundation work package",
-  "Coordinate labor, concrete delivery, and safety checks.",
-  siteEngineer,
-  "2026-05-01"
-);
-foundationTask.updateStatus("In Progress");
+function getContentType(filePath) {
+  if (filePath.endsWith(".css")) {
+    return "text/css; charset=utf-8";
+  }
+  if (filePath.endsWith(".js")) {
+    return "application/javascript; charset=utf-8";
+  }
+  if (filePath.endsWith(".json")) {
+    return "application/json; charset=utf-8";
+  }
+  return "text/html; charset=utf-8";
+}
 
-const materialsTask = system.createTask(
-  "T2",
-  "Track material delivery schedule",
-  "Monitor procurement and update delivery deadlines.",
-  projectManager,
-  "2026-05-03"
-);
-materialsTask.updateStatus("Done");
+function buildDashboardPayload() {
+  const { system, users } = buildDemoSystem();
 
-const weatherRisk = system.reportRisk(
-  "R1",
-  "Severe weather may delay concrete pouring",
-  "High",
-  "Reschedule critical work and maintain a two-day buffer.",
-  siteEngineer
-);
-weatherRisk.review();
+  return {
+    snapshot: system.getDashboardSnapshot(),
+    users: system.listUsers(),
+    tasks: system.listTasks(),
+    risks: system.listRisks(),
+    workItems: system.listWorkItems(),
+    report: system.generateWeeklyReport(users.projectManager)
+  };
+}
 
-const report = system.generateWeeklyReport(projectManager);
+const server = http.createServer(async (request, response) => {
+  const url = request.url ?? "/";
 
-console.log("Dashboard Snapshot");
-console.log(system.getDashboardSnapshot());
-console.log("");
-console.log("Tasks");
-console.log(system.listTasks());
-console.log("");
-console.log("Risks");
-console.log(system.listRisks());
-console.log("");
-console.log("Work Items");
-console.log(system.listWorkItems());
-console.log("");
-console.log("Weekly Report");
-console.log(report);
+  if (url === "/api/dashboard") {
+    response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+    response.end(JSON.stringify(buildDashboardPayload()));
+    return;
+  }
+
+  const safePath = url === "/" ? "index.html" : url.replace(/^\/+/, "");
+  const filePath = path.resolve(publicDir, safePath);
+
+  if (!filePath.startsWith(publicDir)) {
+    response.writeHead(403, { "Content-Type": "text/plain; charset=utf-8" });
+    response.end("Forbidden");
+    return;
+  }
+
+  try {
+    const file = await readFile(filePath);
+    response.writeHead(200, { "Content-Type": getContentType(filePath) });
+    response.end(file);
+  } catch {
+    response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+    response.end("Not found");
+  }
+});
+
+const port = Number(process.env.PORT ?? 3000);
+server.listen(port, () => {
+  console.log(`Smart Construction Site Coordination System running at http://localhost:${port}`);
+});
