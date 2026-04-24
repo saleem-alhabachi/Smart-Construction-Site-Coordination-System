@@ -1,0 +1,13 @@
+{
+  "name": "smart-construction-site-coordination-system",
+  "version": "1.0.0",
+  "description": "A minimal MVP for task coordination, schedule management, risk tracking, and progress reporting on construction sites.",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
