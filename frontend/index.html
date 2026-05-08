@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Smart Construction Site Coordination System - Manage tasks, risks, and project progress with AI assistance.">
+    <title>SCSCS - Construction Site Coordination</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+    <!-- Login Page -->
+    <div id="page-login" class="page page--login">
+        <div class="login-container">
+            <div class="login-brand">
+                <div class="login-brand__icon">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                        <rect x="4" y="20" width="16" height="24" rx="2" fill="var(--accent-primary)"/>
+                        <rect x="24" y="12" width="20" height="32" rx="2" fill="var(--accent-secondary)"/>
+                        <rect x="8" y="4" width="12" height="16" rx="2" fill="var(--accent-tertiary)"/>
+                        <rect x="28" y="18" width="4" height="4" rx="1" fill="var(--surface-elevated)"/>
+                        <rect x="34" y="18" width="4" height="4" rx="1" fill="var(--surface-elevated)"/>
+                        <rect x="28" y="26" width="4" height="4" rx="1" fill="var(--surface-elevated)"/>
+                        <rect x="34" y="26" width="4" height="4" rx="1" fill="var(--surface-elevated)"/>
+                        <rect x="8" y="26" width="4" height="4" rx="1" fill="var(--surface-elevated)"/>
+                        <rect x="8" y="34" width="4" height="4" rx="1" fill="var(--surface-elevated)"/>
+                    </svg>
+                </div>
+                <h1 class="login-brand__title">SCSCS</h1>
+                <p class="login-brand__subtitle">Smart Construction Site Coordination System</p>
+            </div>
+
+            <form id="form-login" class="login-form" autocomplete="off">
+                <div class="form-group">
+                    <label for="login-email" class="form-label">Email Address</label>
+                    <input type="email" id="login-email" class="form-input" placeholder="you@construction.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password" class="form-label">Password</label>
+                    <input type="password" id="login-password" class="form-input" placeholder="Enter password" required>
+                </div>
+                <button type="submit" id="btn-login" class="btn btn--primary btn--full">Sign In</button>
+                <div id="login-error" class="form-error" hidden></div>
+            </form>
+
+            <div class="login-divider"><span>or create an account</span></div>
+
+            <form id="form-register" class="login-form" autocomplete="off">
+                <div class="form-group">
+                    <label for="reg-name" class="form-label">Full Name</label>
+                    <input type="text" id="reg-name" class="form-input" placeholder="Full name" required minlength="2">
+                </div>
+                <div class="form-group">
+                    <label for="reg-email" class="form-label">Email Address</label>
+                    <input type="email" id="reg-email" class="form-input" placeholder="you@construction.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password" class="form-label">Password</label>
+                    <input type="password" id="reg-password" class="form-input" placeholder="Min 6 characters" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="reg-role" class="form-label">Role</label>
+                    <select id="reg-role" class="form-input form-select" required>
+                        <option value="project_manager">Project Manager</option>
+                        <option value="site_engineer">Site Engineer</option>
+                        <option value="subcontractor">Subcontractor</option>
+                    </select>
+                </div>
+                <button type="submit" id="btn-register" class="btn btn--secondary btn--full">Create Account</button>
+                <div id="register-error" class="form-error" hidden></div>
+                <div id="register-success" class="form-success" hidden></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- App Shell -->
+    <div id="app-shell" class="app-shell" style="display:none">
+        <!-- Sidebar Navigation -->
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar__brand">
+                <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
+                    <rect x="4" y="20" width="16" height="24" rx="2" fill="var(--accent-primary)"/>
+                    <rect x="24" y="12" width="20" height="32" rx="2" fill="var(--accent-secondary)"/>
+                    <rect x="8" y="4" width="12" height="16" rx="2" fill="var(--accent-tertiary)"/>
+                </svg>
+                <span class="sidebar__brand-text">SCSCS</span>
+            </div>
+
+            <ul class="sidebar__nav">
+                <li><a href="#dashboard" class="nav-link active" data-page="dashboard"><span class="nav-link__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span><span class="nav-link__text">Dashboard</span></a></li>
+                <li><a href="#tasks" class="nav-link" data-page="tasks"><span class="nav-link__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span class="nav-link__text">Tasks</span></a></li>
+                <li><a href="#risks" class="nav-link" data-page="risks"><span class="nav-link__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="nav-link__text">Risks</span></a></li>
+                <li><a href="#users" class="nav-link" data-page="users" id="nav-users"><span class="nav-link__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-link__text">Users</span></a></li>
+                <li><a href="#ai" class="nav-link" data-page="ai"><span class="nav-link__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v1h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2V6a4 4 0 0 1 4-4z"/><circle cx="9" cy="14" r="1.5"/><circle cx="15" cy="14" r="1.5"/><path d="M9 18h6"/></svg></span><span class="nav-link__text">AI Assistant</span></a></li>
+                <li><a href="#reports" class="nav-link" data-page="reports"><span class="nav-link__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span><span class="nav-link__text">Reports</span></a></li>
+            </ul>
+
+            <div class="sidebar__footer">
+                <div class="sidebar__user">
+                    <div class="sidebar__user-info">
+                        <span id="sidebar-user-name" class="sidebar__user-name">User</span>
+                        <span id="sidebar-user-role" class="sidebar__user-role">Role</span>
+                    </div>
+                </div>
+                <button id="btn-logout" class="btn btn--ghost btn--small btn--full">Sign Out</button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="topbar">
+                <button id="btn-sidebar-toggle" class="btn btn--ghost btn--icon sidebar-toggle">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <h2 id="page-title" class="topbar__title">Dashboard</h2>
+                <div class="topbar__actions">
+                    <span id="ai-status-indicator" class="ai-status" title="AI Service Status">
+                        <span class="ai-status__dot"></span>
+                        <span class="ai-status__text">AI</span>
+                    </span>
+                </div>
+            </header>
+
+            <div id="content-area" class="content-area">
+                <!-- Dashboard View -->
+                <section id="view-dashboard" class="view">
+                    <div id="dashboard-grid" class="dashboard-grid"></div>
+                    <div class="dashboard-charts">
+                        <div class="card" id="card-tasks-breakdown">
+                            <h3 class="card__title">Tasks Breakdown</h3>
+                            <div id="tasks-chart" class="chart-container"></div>
+                        </div>
+                        <div class="card" id="card-risks-breakdown">
+                            <h3 class="card__title">Risks by Severity</h3>
+                            <div id="risks-chart" class="chart-container"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tasks View -->
+                <section id="view-tasks" class="view" style="display:none">
+                    <div class="view__toolbar">
+                        <button id="btn-new-task" class="btn btn--primary">New Task</button>
+                    </div>
+                    <div id="kanban-board" class="kanban-board"></div>
+                </section>
+
+                <!-- Risks View -->
+                <section id="view-risks" class="view" style="display:none">
+                    <div class="view__toolbar">
+                        <button id="btn-new-risk" class="btn btn--primary">Report Risk</button>
+                    </div>
+                    <div id="risks-table-container" class="table-container"></div>
+                </section>
+
+                <!-- Users View -->
+                <section id="view-users" class="view" style="display:none">
+                    <div id="users-list" class="users-grid"></div>
+                </section>
+
+                <!-- AI Assistant View -->
+                <section id="view-ai" class="view" style="display:none">
+                    <div class="ai-layout">
+                        <div class="ai-chat">
+                            <div id="ai-messages" class="ai-chat__messages">
+                                <div class="ai-message ai-message--system">
+                                    <p>Construction site coordination assistant is ready. Ask about tasks, risks, safety protocols, or project planning.</p>
+                                </div>
+                            </div>
+                            <form id="ai-chat-form" class="ai-chat__input">
+                                <input type="text" id="ai-input" class="form-input" placeholder="Ask the AI assistant..." autocomplete="off">
+                                <button type="submit" class="btn btn--primary">Send</button>
+                            </form>
+                        </div>
+                        <div class="ai-sidebar">
+                            <div class="card">
+                                <h3 class="card__title">Quick Analysis</h3>
+                                <p class="text-muted">Select a task or risk, then click Analyze to get AI-powered insights.</p>
+                                <div class="form-group">
+                                    <label class="form-label">Analysis Type</label>
+                                    <select id="ai-analyze-type" class="form-input form-select">
+                                        <option value="task">Task</option>
+                                        <option value="risk">Risk</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Title</label>
+                                    <input type="text" id="ai-analyze-title" class="form-input" placeholder="Item title">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Description</label>
+                                    <textarea id="ai-analyze-desc" class="form-input form-textarea" rows="4" placeholder="Describe the item..."></textarea>
+                                </div>
+                                <button id="btn-ai-analyze" class="btn btn--secondary btn--full">Run Analysis</button>
+                                <div id="ai-analysis-result" class="ai-analysis-result" hidden></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reports View -->
+                <section id="view-reports" class="view" style="display:none">
+                    <div class="view__toolbar">
+                        <button id="btn-generate-report" class="btn btn--primary">Generate Weekly Report</button>
+                    </div>
+                    <div id="report-content" class="report-content"></div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div id="modal-dialog" class="modal-dialog">
+            <div class="modal-dialog__header">
+                <h3 id="modal-title" class="modal-dialog__title">Modal</h3>
+                <button id="modal-close" class="btn btn--ghost btn--icon">&times;</button>
+            </div>
+            <div id="modal-body" class="modal-dialog__body"></div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/tasks.js"></script>
+    <script src="js/risks.js"></script>
+    <script src="js/users.js"></script>
+    <script src="js/ai.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

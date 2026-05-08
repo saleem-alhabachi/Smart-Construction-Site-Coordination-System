@@ -1,127 +1,166 @@
 # Smart Construction Site Coordination System (SCSCS)
 
-## Executive Overview
-The Smart Construction Site Coordination System (SCSCS) is a project management-oriented software prototype designed to improve coordination on construction sites. The project brings together task management, schedule visibility, risk tracking, and progress reporting in one structured system so project stakeholders can collaborate more effectively.
+## Overview
 
-## Problem Statement
-Construction projects often face delays, cost overruns, and communication problems because information is spread across different tools and responsibilities are not always tracked clearly. When risks are reported late or task ownership is unclear, decision-making becomes slower and project performance is affected.
+A production-grade construction project management platform with task tracking, risk management, role-based access control, AI-powered analysis, and a modern web GUI.
 
-## Proposed Solution
-SCSCS addresses these issues through a centralized coordination system that supports:
+**Live System**: `https://<VPS_IP>` (self-signed certificate)
+**API Docs**: `https://<VPS_IP>/api/docs`
+**Sprint Board**: [GitHub Projects](https://github.com/saleem-alhabachi/Smart-Construction-Site-Coordination-System/projects)
 
-- task creation, assignment, and status tracking
-- schedule and deadline visibility
-- risk reporting, review, and mitigation
-- weekly progress reporting
-- role-based responsibility management
+---
 
-The goal is to provide a functional MVP that demonstrates how project management practices can be applied in a realistic construction-site scenario.
+## Architecture
 
-## Project Objectives
-- Improve coordination between project stakeholders
-- Increase visibility of tasks, deadlines, and responsibilities
-- Support earlier identification and management of project risks
-- Provide structured progress reporting for weekly monitoring
-- Demonstrate project planning and object-oriented software design in one repository
-
-## Team Roles
-- Saleem Alhabachi: Project Manager and Documentation Lead
-- Waleed: Backend and System Logic
-- Mohammed: Frontend Support and Testing
-
-## Project Management Tools
-- Jira Software for task tracking and workflow management
-- GitHub for version control and project hosting
-- PlantUML and Mermaid for system diagrams
-- Microsoft Excel for planning, budgeting, and risk tracking
-
-## Repository Structure
-`docs/`
-- `Project Description.pdf`
-- `Smart_Construction_Site_Project_Plan.xlsx`
-- `Risk_Analysis_and_Testing_Plan.md`
-- `Risk_Updates.md`
-- `Sprint_Board.md`
-- `Demo_Plan.md`
-- `Class_Diagram.md`
-- `Class_Diagram.puml`
-- `UML diagram.png`
-
-`src/`
-- `index.js`
-- `models/`
-- `services/`
-
-`test/`
-- `system.test.js`
-
-`.github/workflows/`
-- `ci.yml`
-
-## Documentation Guide
-The following documents support the project presentation:
-
-- [Project Description](docs/Project%20Description.pdf): full system vision, features, architecture, technology stack, security, deployment, integration, and technical requirements
-- [Project Plan](docs/Smart_Construction_Site_Project_Plan.xlsx): team roles, project timeline, budget planning, and initial risk planning
-- [Risk Analysis and Testing Plan](docs/Risk_Analysis_and_Testing_Plan.md): risk identification, risk assessment, risk matrix, mitigation actions, roadmap, validation, and success criteria
-- [Risk Updates](docs/Risk_Updates.md): updates to risk status during implementation
-- [Sprint Board](docs/Sprint_Board.md): workflow stages and sprint organization
-- [Demo Plan](docs/Demo_Plan.md): suggested live demonstration structure
-- [Class Diagram](docs/Class_Diagram.md): class relationships and object-oriented design overview
-- [PlantUML Class Diagram](docs/Class_Diagram.puml): diagram source file
-
-## MVP Implementation
-The repository includes a minimal runnable MVP implemented in Node.js with a lightweight frontend dashboard. It demonstrates the main project concepts through code:
-
-- user role registration
-- task creation and assignment
-- task status updates
-- risk reporting and mitigation flow
-- weekly progress report generation
-- dashboard-style summary output
-- web-based visual presentation of tasks, risks, roles, and work items
-
-Run the MVP locally with:
-
-```bash
-npm start
+```
+Internet (HTTPS :443)
+       |
+   [Nginx] --> [Frontend: Static HTML/CSS/JS]
+       |
+       +-----> [Backend: FastAPI]
+                    |
+             +------+-------+
+          [PostgreSQL]   [Ollama AI]
 ```
 
-Then open:
+All services run in Docker containers orchestrated by `docker-compose.yml`.
+
+| Service    | Technology          | Purpose                              |
+|------------|---------------------|--------------------------------------|
+| Backend    | FastAPI + SQLAlchemy | REST API, business logic, auth       |
+| Frontend   | HTML/CSS/JS SPA     | Web GUI dashboard                    |
+| Database   | PostgreSQL 16       | Persistent data storage              |
+| AI Engine  | Ollama (llama3.2)   | Task/risk analysis, chat assistant   |
+| Proxy      | Nginx               | HTTPS termination, reverse proxy     |
+
+---
+
+## Features
+
+### Core
+- JWT authentication with role-based access control
+- Task management with Kanban board (To Do / In Progress / Review / Done)
+- Risk tracking with severity levels and mitigation workflows
+- User management (Project Manager only)
+- Dashboard with KPI cards and chart breakdowns
+- Weekly progress report generation
+
+### AI-Powered (Ollama)
+- Task analysis: priority, risk level, effort estimation, recommendations
+- Risk analysis: safety concerns, resource needs, mitigation guidance
+- Multi-turn chat assistant with live project context injection
+
+### Infrastructure
+- Dockerized microservices architecture
+- PostgreSQL with Alembic migrations
+- Nginx reverse proxy with HTTPS (self-signed TLS)
+- Prometheus metrics endpoint
+- GitHub Actions CI/CD pipeline with VPS auto-deploy
+
+---
+
+## Quick Start
+
+### Prerequisites
+- Docker & Docker Compose
+- Git
+
+### Local Development
 
 ```bash
-http://localhost:3000
+# Clone
+git clone https://github.com/saleem-alhabachi/Smart-Construction-Site-Coordination-System.git
+cd Smart-Construction-Site-Coordination-System
+
+# Copy environment config
+cp .env.example .env
+
+# Generate SSL certs (use 127.0.0.1 for local)
+chmod +x nginx/generate-certs.sh
+bash nginx/generate-certs.sh 127.0.0.1
+
+# Start all services
+docker compose up -d --build
+
+# Open in browser
+open https://localhost
 ```
 
-Run automated tests with:
+### VPS Deployment
 
 ```bash
-npm test
+# On VPS
+git clone <repo> /opt/scscs && cd /opt/scscs
+cp .env.example .env
+bash nginx/generate-certs.sh <VPS_PUBLIC_IP>
+docker compose up -d --build
 ```
 
-## Object-Oriented Design
-The implementation is structured around core classes such as `User`, `ProjectManager`, `SiteEngineer`, `Subcontractor`, `WorkItem`, `Task`, `Risk`, `ProgressReport`, and `SmartConstructionSystem`.
+---
 
-The code demonstrates:
+## API Reference
 
-- Encapsulation through private fields such as `#id`, `#role`, and `#status`
-- Inheritance through role-based user subclasses and the shared `WorkItem` base class
-- Polymorphism through role-specific permission behavior in different user types
+All endpoints require JWT auth (except register/login). Pass `Authorization: Bearer <token>` header.
 
-## CI/CD
-The project includes a GitHub Actions workflow in `.github/workflows/ci.yml`. The workflow automatically runs the test suite on pushes and pull requests to `main`, helping ensure that the MVP remains stable as the repository evolves.
+| Method   | Endpoint                   | Description                  | Access             |
+|----------|----------------------------|------------------------------|--------------------|
+| POST     | /api/v1/auth/register      | Create account               | Public             |
+| POST     | /api/v1/auth/token         | Login, get JWT               | Public             |
+| GET      | /api/v1/users/me           | Current user profile         | Authenticated      |
+| GET      | /api/v1/users              | List all users               | Project Manager    |
+| DELETE   | /api/v1/users/:id          | Remove user                  | Project Manager    |
+| GET      | /api/v1/tasks              | List all tasks               | Authenticated      |
+| POST     | /api/v1/tasks              | Create task                  | Engineer+          |
+| GET      | /api/v1/tasks/:id          | Get task                     | Authenticated      |
+| PUT      | /api/v1/tasks/:id          | Update task                  | Engineer+          |
+| PATCH    | /api/v1/tasks/:id/status   | Change task status           | Authenticated      |
+| DELETE   | /api/v1/tasks/:id          | Delete task                  | Engineer+          |
+| GET      | /api/v1/risks              | List all risks               | Authenticated      |
+| POST     | /api/v1/risks              | Report risk                  | Engineer+          |
+| PUT      | /api/v1/risks/:id          | Update risk                  | Engineer+          |
+| PATCH    | /api/v1/risks/:id/status   | Change risk status           | Engineer+          |
+| DELETE   | /api/v1/risks/:id          | Delete risk                  | Engineer+          |
+| GET      | /api/v1/dashboard          | KPI snapshot                 | Authenticated      |
+| GET      | /api/v1/reports/weekly      | Weekly report                | Authenticated      |
+| POST     | /api/v1/ai/analyze/task    | AI task analysis             | Authenticated      |
+| POST     | /api/v1/ai/analyze/risk    | AI risk analysis             | Authenticated      |
+| POST     | /api/v1/ai/chat            | AI chat                      | Authenticated      |
+| GET      | /api/v1/ai/status          | AI service health            | Authenticated      |
 
-## Presentation Flow
-For a live presentation from GitHub, the recommended order is:
+---
 
-1. Start with this README for the project overview, problem, solution, and repository structure.
-2. Open the project description document for the full system vision and architecture.
-3. Show the project plan file for team roles, timeline, budget, and initial planning.
-4. Open the risk analysis and testing plan to explain project control and validation.
-5. Show the risk updates and sprint board documents to explain project tracking.
-6. Open the class diagram to explain the system design.
-7. Show `src/` to present the MVP implementation.
-8. End with `.github/workflows/ci.yml` to show CI/CD support.
+## Team
 
-## Current Scope
-This repository contains a project-management-focused prototype and a minimal working MVP. It is intended to demonstrate planning, coordination, risk management, testing preparation, and object-oriented implementation rather than a full production deployment.
+| Name              | Role                              |
+|-------------------|-----------------------------------|
+| Saleem Alhabachi  | Project Manager, Documentation    |
+| Waleed            | Backend, System Logic, DevOps     |
+| Mohammed          | Frontend Support, Testing         |
+
+---
+
+## CI/CD Pipeline
+
+The GitHub Actions workflow (`.github/workflows/ci.yml`) runs on every push/PR to `main`:
+
+1. **Lint**: Python code analysis with `ruff`
+2. **Test**: Backend tests with real PostgreSQL service container
+3. **Build**: Docker images for backend and nginx
+4. **Deploy**: SSH into VPS, pull latest code, rebuild and restart containers
+
+Required GitHub Secrets: `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`
+
+---
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Project Description](docs/Project%20Description.pdf) | Full system vision, architecture, requirements |
+| [Project Plan](docs/Smart_Construction_Site_Project_Plan.xlsx) | Timeline, budget, team roles |
+| [Risk Analysis](docs/Risk_Analysis_and_Testing_Plan.md) | Risk identification, assessment, mitigation |
+| [Risk Updates](docs/Risk_Updates.md) | Implementation risk status changes |
+| [Sprint Board](docs/Sprint_Board.md) | Sprint workflow and board link |
+| [Demo Plan](docs/Demo_Plan.md) | Live demonstration structure |
+| [Class Diagram](docs/Class_Diagram.md) | System design overview |
+| [API Reference](docs/API_Reference.md) | Full endpoint documentation |
